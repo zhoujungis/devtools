@@ -19,7 +19,7 @@ export const tools: ToolDefinition[] = [
     nameZh: 'JSON 查看器',
     description: '树形查看 JSON，可折叠展开',
     category: 'developer',
-    icon: 'TreePines',
+    icon: 'ListTree',
     keywords: ['json', 'viewer', 'tree', '查看', '树形'],
     path: '/tools/json-viewer',
     component: () => import('@/tools/json-viewer/JsonViewer.vue'),

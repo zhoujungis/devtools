@@ -63,7 +63,6 @@ async function createEditor(){
     readonlyCompartment.of(EditorState.readOnly.of(props.readonly)),
   ]
   if (props.placeholder) extensions.push(cmPlaceholder(props.placeholder))
-  if(isDark()) extensions.push(oneDark)
   const state = EditorState.create({ doc: props.modelValue, extensions })
   view = new EditorView({ state, parent: editorRef.value })
   if (props.ariaLabel) view.contentDOM.setAttribute('aria-label', props.ariaLabel)

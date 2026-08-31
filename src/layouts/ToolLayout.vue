@@ -5,6 +5,7 @@ import { getToolByPath } from '@/data/tools'
 import { useFavoritesStore } from '@/stores/favorites'
 import { useRecentStore } from '@/stores/recent'
 import { Star } from 'lucide-vue-next'
+import ToolIcon from '@/components/common/ToolIcon.vue'
 import { watch } from 'vue'
 
 defineProps<{ title?: string }>()
@@ -36,6 +37,7 @@ const hasOptionalExternalService = computed(() => processingMode.value === 'mixe
       <div class="flex items-start justify-between gap-4">
         <div>
           <h1 class="text-2xl font-bold flex items-center gap-3">
+            <span v-if="tool" class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400"><ToolIcon :name="tool.icon" class="w-5 h-5" /></span>
             {{ tool?.nameZh }}
             <span class="text-sm font-normal text-muted-foreground hidden sm:inline">{{ tool?.name }}</span>
           </h1>

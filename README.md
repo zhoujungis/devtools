@@ -259,8 +259,10 @@ npm run lint && npm run test && npm run build
 4. `public/_redirects` 会随构建输出，用于 Vue Router 的 SPA fallback。
 5. `public/_headers` 会随构建输出，用于安全响应头。
 6. PWA 的 `manifest.webmanifest`、`sw.js` 和 Workbox 文件由构建自动生成。
+7. 构建使用 `vite-ssg` 预渲染所有页面（首页、分类页、全部工具页），每个页面都会输出独立的 `<title>`/description/keywords/og 标签。
+8. 正式域名确定后，执行 `SITE_URL=https://your-domain.com npm run sitemap` 生成 `dist/sitemap.xml`，再一并部署。
 
-项目没有写死生产域名。正式域名确定后，应在部署平台配置 canonical/分享链接和 sitemap，避免把示例域名提交给搜索引擎。
+项目没有写死生产域名。正式域名确定前请勿提交 sitemap，避免把示例域名提交给搜索引擎。
 
 ## 已知限制
 

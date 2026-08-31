@@ -6,6 +6,7 @@ import { useFavoritesStore } from '@/stores/favorites'
 import { useRecentStore } from '@/stores/recent'
 import { useRouter } from 'vue-router'
 import { Search, Flame, Clock, Star, Sparkles, ArrowRight } from 'lucide-vue-next'
+import ToolIcon from '@/components/common/ToolIcon.vue'
 
 const fav = useFavoritesStore()
 const recent = useRecentStore()
@@ -48,7 +49,7 @@ const hotKeywords = ['JSON','Base64','JWT','UUID','Timestamp']
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         <button v-for="t in featured" :key="t.id" @click="go(t.path)" class="text-left bg-white dark:bg-slate-900 border rounded-xl p-4 hover:shadow-md hover:border-primary/30 transition-all group">
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600">{{ t.nameZh.slice(0,1) }}</div>
+            <div class="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600"><ToolIcon :name="t.icon" /></div>
             <div class="flex-1">
               <div class="font-medium text-sm">{{ t.nameZh }}</div>
               <div class="text-xs text-muted-foreground">{{ t.name }}</div>
@@ -60,8 +61,9 @@ const hotKeywords = ['JSON','Base64','JWT','UUID','Timestamp']
       </div>
     </section>
 
-    <!-- Recent & Favorites -->
-    <div class="grid lg:grid-cols-2 gap-6">
+    <!-- Recent & Favorites (client-only: depends on localStorage) -->
+    <client-only>
+      <div class="grid lg:grid-cols-2 gap-6">
       <section class="bg-white dark:bg-slate-900 border rounded-xl p-4">
         <h3 class="flex items-center gap-2 font-medium text-sm mb-3"><Clock class="w-4 h-4"/> 最近使用</h3>
         <div v-if="recentTools.length===0" class="text-xs text-muted-foreground py-6 text-center">暂无记录，去使用一个工具吧</div>
@@ -76,7 +78,8 @@ const hotKeywords = ['JSON','Base64','JWT','UUID','Timestamp']
           <button v-for="t in favoriteTools" :key="t.id" @click="go(t.path)" class="text-xs px-3 py-1.5 rounded-full bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800 border hover:bg-amber-100">{{ t.nameZh }}</button>
         </div>
       </section>
-    </div>
+      </div>
+    </client-only>
 
     <!-- All categories -->
     <section>
@@ -85,13 +88,14 @@ const hotKeywords = ['JSON','Base64','JWT','UUID','Timestamp']
         <div v-for="cat in populatedCategories" :key="cat.id" class="bg-white dark:bg-slate-900 border rounded-xl p-4">
           <div class="flex items-center gap-2 mb-3">
             <div class="w-2 h-6 rounded-full" :class="cat.color"></div>
+            <span class="text-muted-foreground"><ToolIcon :name="cat.icon" class="w-4 h-4" /></span>
             <h3 class="font-medium">{{ cat.nameZh }}</h3>
             <span class="text-xs text-muted-foreground">{{ cat.name }}</span>
             <span class="ml-auto text-xs bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full">{{ allByCategory[cat.id]?.length || 0 }}</span>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
             <button v-for="t in allByCategory[cat.id]" :key="t.id" @click="go(t.path)" class="text-left px-3 py-2.5 rounded-lg border hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center gap-3">
-              <span class="text-xs font-mono bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">{{ t.nameZh.slice(0,2) }}</span>
+              <span class="w-7 h-7 rounded-md bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300"><ToolIcon :name="t.icon" class="w-4 h-4" /></span>
               <span class="text-sm flex-1 truncate">{{ t.nameZh }}</span>
               <span v-if="t.featured" class="text-[10px] bg-orange-100 text-orange-600 px-1.5 py-0.5 rounded-full">热门</span>
             </button>

@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref, computed, watch, nextTick } from 'vue'
+import { ref, computed, watch, nextTick, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import { searchTools } from '@/data/tools'
 import { Search } from 'lucide-vue-next'
+import ToolIcon from '@/components/common/ToolIcon.vue'
 
 const props = defineProps<{ open: boolean }>()
 const emit = defineEmits<{ (e:'close'):void }>()
@@ -16,8 +17,13 @@ const selected = ref(0)
 const results = computed(() => searchTools(query.value).slice(0,12))
 
 watch(() => props.open, async v => {
+  document.body.classList.toggle('overflow-hidden', v)
   if(v){ restoreFocus = document.activeElement as HTMLElement | null; query.value=''; selected.value=0; await nextTick(); inputRef.value?.focus() }
   else restoreFocus?.focus()
+})
+onBeforeUnmount(() => {
+  document.body.classList.remove('overflow-hidden')
+  restoreFocus?.focus()
 })
 watch(results, value => { selected.value = Math.min(selected.value, Math.max(0, value.length - 1)) })
 
@@ -53,7 +59,7 @@ function onKey(e:KeyboardEvent){
         <button v-for="(t,i) in results" :key="t.id" @click="go(t.path)" :id="`search-${t.id}`" role="option" :aria-selected="i===selected"
             class="w-full text-left px-3 py-3 rounded-lg flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-800"
             :class="{ 'bg-slate-100 dark:bg-slate-800': i===selected }">
-          <div class="w-9 h-9 rounded-lg bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 text-sm shrink-0">{{ t.nameZh.slice(0,1) }}</div>
+          <div class="w-9 h-9 rounded-lg bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0"><ToolIcon :name="t.icon" class="w-4 h-4" /></div>
           <div class="flex-1 min-w-0">
             <div class="text-sm font-medium">{{ t.nameZh }} <span class="text-xs text-muted-foreground">{{ t.name }}</span></div>
             <div class="text-xs text-muted-foreground truncate">{{ t.description }}</div>

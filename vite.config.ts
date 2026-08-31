@@ -2,13 +2,24 @@ import { defineConfig } from 'vitest/config'
 import vue from '@vitejs/plugin-vue'
 import { VitePWA } from 'vite-plugin-pwa'
 import { resolve } from 'path'
+import { categories } from './src/data/categories'
 
-export default defineConfig({
+const ssgOptions = {
+  includedRoutes(_paths: string[], routes: { path: string }[]) {
+    return routes.flatMap(r => {
+      if (r.path === '/category/:id') return categories.map(c => `/category/${c.id}`)
+      if (r.path.includes(':pathMatch')) return []
+      return r.path
+    })
+  }
+}
+
+export default defineConfig(({ isSsrBuild }) => ({
   plugins: [
     vue(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'robots.txt', 'icons/*.png'],
+      includeAssets: ['favicon.ico', 'favicon.svg', 'robots.txt', 'theme-init.js', 'icons/*.png'],
       manifest: {
         name: 'DevBox · 程序员工具箱',
         short_name: 'DevBox',
@@ -25,14 +36,7 @@ export default defineConfig({
         ]
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
-            handler: 'CacheFirst',
-            options: { cacheName: 'google-fonts-cache', expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 } }
-          }
-        ]
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}']
       }
     })
   ],
@@ -41,29 +45,35 @@ export default defineConfig({
       '@': resolve(__dirname, 'src')
     }
   },
+  ...({ ssgOptions } as Record<string, unknown>),
+  ssr: {
+    noExternal: true
+  },
   server: {
     port: 5173,
     host: true
   },
   build: {
     target: 'esnext',
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          vendor: ['vue', 'vue-router', 'pinia'],
-          codemirror: [
-            '@codemirror/view',
-            '@codemirror/state',
-            '@codemirror/commands',
-            '@codemirror/language'
-          ]
+    rollupOptions: isSsrBuild
+      ? {}
+      : {
+          output: {
+            manualChunks: {
+              vendor: ['vue', 'vue-router', 'pinia'],
+              codemirror: [
+                '@codemirror/view',
+                '@codemirror/state',
+                '@codemirror/commands',
+                '@codemirror/language'
+              ]
+            }
+          }
         }
-      }
-    }
   },
   test: {
     environment: 'happy-dom',
     globals: true,
     include: ['src/**/*.{test,spec}.{ts,js}', 'tests/**/*.{test,spec}.{ts,js}']
   } as any
-})
+}))
