@@ -1,12 +1,21 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import ToolLayout from '@/layouts/ToolLayout.vue'
 import CodeEditor from '@/components/editor/CodeEditor.vue'
-import { decodeJwt } from './processor'
+import { decodeJwt, verifyJwtHs } from './processor'
 import { copyToClipboard } from '@/composables/useClipboard'
+import { ShieldCheck } from 'lucide-vue-next'
 
 const input = ref('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkRldkJveCIsImlhdCI6MTUxNjIzOTAyMiwiZXhwIjoxNzE2MjM5MDIyLCJpc3MiOiJkZXZib3gifQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c')
+const secret = ref('')
+const verifyState = ref<{ verified: boolean; error?: string } | null>(null)
 const result = computed(()=> decodeJwt(input.value))
+
+watch([input, secret], async () => {
+  verifyState.value = null
+  if (!secret.value || !result.value.valid) return
+  verifyState.value = await verifyJwtHs(input.value, secret.value)
+})
 </script>
 <template>
   <ToolLayout>
@@ -21,10 +30,16 @@ const result = computed(()=> decodeJwt(input.value))
         <CodeEditor :modelValue="result.payloadJson||''" language="json" :readonly="true" />
       </div>
       <div class="space-y-3">
-        <div class="bg-white dark:bg-slate-900 border rounded-lg p-4">
+        <div class="card !rounded-lg p-4">
           <h4 class="font-medium text-sm mb-2">签名 Signature</h4>
           <p class="font-mono text-xs break-all bg-slate-50 dark:bg-slate-800 p-2 rounded">{{ result.signature }}</p>
-          <p class="text-xs text-amber-600 dark:text-amber-400 mt-2">⚠️ JWT 解码不代表签名验证成功。验证需服务端使用密钥。</p>
+          <div class="mt-3 flex items-center gap-2">
+            <input v-model="secret" type="password" placeholder="HS256 密钥（本地验证签名）" class="flex-1 px-3 py-2 rounded-lg border bg-white dark:bg-slate-900 text-xs font-mono" />
+            <ShieldCheck class="w-5 h-5 shrink-0" :class="verifyState?.verified ? 'text-green-600' : 'text-slate-400'" />
+          </div>
+          <p v-if="verifyState?.verified" class="text-xs text-green-600 mt-2">✓ 签名验证通过：密钥与签名匹配</p>
+          <p v-else-if="verifyState && !verifyState.verified" class="text-xs text-red-500 mt-2">✗ 验证未通过{{ verifyState.error ? '：' + verifyState.error : '（密钥不匹配）' }}</p>
+          <p v-else class="text-xs text-amber-600 dark:text-amber-400 mt-2">⚠️ JWT 解码不代表签名验证成功。填入 HS256/HS384/HS512 密钥可本地验证；RS/ES 算法需服务端公钥。</p>
         </div>
         <div class="bg-slate-50 dark:bg-slate-800 rounded-lg p-4 text-sm space-y-1">
           <div class="flex justify-between"><span class="text-muted-foreground">算法 alg</span><span class="font-mono">{{ result.header?.alg }}</span></div>

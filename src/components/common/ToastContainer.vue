@@ -8,7 +8,7 @@ const toast = useToastStore()
       <div v-for="t in toast.toasts" :key="t.id"
            :role="t.type === 'error' ? 'alert' : 'status'"
            :aria-live="t.type === 'error' ? 'assertive' : 'polite'"
-           class="pointer-events-auto px-4 py-3 rounded-lg shadow-lg text-sm font-medium flex items-center gap-2 min-w-[200px] max-w-sm"
+           class="pointer-events-auto px-4 py-3 rounded-xl shadow-lg text-sm font-medium flex items-center gap-2 min-w-[200px] max-w-sm"
            :class="{
              'bg-green-600 text-white': t.type==='success',
              'bg-red-600 text-white': t.type==='error',
@@ -22,7 +22,7 @@ const toast = useToastStore()
   </div>
 </template>
 <style scoped>
-.toast-move, .toast-enter-active, .toast-leave-active { transition: all 0.3s ease; }
-.toast-enter-from { opacity:0; transform: translateY(10px) scale(0.95); }
-.toast-leave-to { opacity:0; transform: translateY(-10px) scale(0.95); }
+.toast-move, .toast-enter-active, .toast-leave-active { transition: all 0.25s ease; }
+.toast-enter-from { opacity:0; transform: translateX(24px); }
+.toast-leave-to { opacity:0; transform: translateX(24px); }
 </style>

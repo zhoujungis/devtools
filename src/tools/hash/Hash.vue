@@ -2,11 +2,11 @@
 import { ref, watch } from 'vue'
 import ToolLayout from '@/layouts/ToolLayout.vue'
 import CodeEditor from '@/components/editor/CodeEditor.vue'
-import { hashMD5, hashSHA, type HashAlgo } from './processor'
+import { hashSHA, type HashAlgo } from './processor'
 import { copyToClipboard } from '@/composables/useClipboard'
 
 const input = ref('Hello DevBox')
-const algos: HashAlgo[] = ['MD5','SHA-1','SHA-256','SHA-384','SHA-512']
+const algos: HashAlgo[] = ['SHA-1','SHA-256','SHA-384','SHA-512']
 const results = ref<Record<string,string>>({})
 const hmacKey = ref('')
 const compareA = ref('')
@@ -16,8 +16,8 @@ let computeRun = 0
 async function compute(){
   const run = ++computeRun
   results.value = {}
-  const next: Record<string, string> = { MD5: hashMD5(input.value) }
-  for(const a of algos.filter(x=>x!=='MD5') as any){
+  const next: Record<string, string> = {}
+  for(const a of algos){
     next[a] = await hashSHA(input.value, a)
     if (run !== computeRun) return
   }
@@ -57,7 +57,7 @@ watch([input, hmacKey], compute, { immediate:true })
         </div>
       </div>
 
-      <div class="bg-white dark:bg-slate-900 border rounded-lg p-4">
+      <div class="card !rounded-lg p-4">
         <div class="text-sm font-medium mb-2">Hash 对比</div>
         <div class="grid sm:grid-cols-2 gap-2">
           <input v-model="compareA" placeholder="Hash A" class="px-3 py-2 border rounded-lg font-mono text-xs" />

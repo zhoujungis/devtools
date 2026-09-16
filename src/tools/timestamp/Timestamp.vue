@@ -44,7 +44,7 @@ const dateToTs = computed(()=> {
     </div>
 
     <div class="grid lg:grid-cols-2 gap-6">
-      <div class="bg-white dark:bg-slate-900 border rounded-xl p-4">
+      <div class="card p-4">
         <h3 class="font-medium text-sm mb-3">时间戳 → 日期</h3>
         <div class="flex gap-2 mb-2">
           <input v-model="tsInput" class="flex-1 px-3 py-2 border rounded-lg font-mono text-sm" placeholder="1710000000" />
@@ -59,7 +59,7 @@ const dateToTs = computed(()=> {
           <button @click="tsInput=String(now.seconds)" class="text-xs border px-2 py-1 rounded">填入当前</button>
         </div>
       </div>
-      <div class="bg-white dark:bg-slate-900 border rounded-xl p-4">
+      <div class="card p-4">
         <h3 class="font-medium text-sm mb-3">日期 → 时间戳</h3>
         <input v-model="dateInput" class="w-full px-3 py-2 border rounded-lg text-sm mb-2" placeholder="2026-08-28 14:30:20" />
         <div class="p-3 bg-slate-50 dark:bg-slate-800 rounded font-mono text-sm">{{ dateToTs }}</div>

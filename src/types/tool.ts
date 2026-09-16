@@ -20,5 +20,8 @@ export interface CategoryDefinition {
   nameZh: string
   description: string
   icon: string
-  color: string
+  color: {
+    solid: string
+    soft: string
+  }
 }

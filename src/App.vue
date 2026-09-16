@@ -33,6 +33,8 @@ useHead({
 </script>
 <template>
   <DefaultLayout>
-    <router-view />
+    <transition name="page" mode="out-in">
+      <router-view :key="route.path" />
+    </transition>
   </DefaultLayout>
 </template>

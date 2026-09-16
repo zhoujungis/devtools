@@ -1,15 +1,19 @@
 <script setup lang="ts">
 import { computed, type Component } from 'vue'
 import {
-  Braces, ListTree, GitCompare, Binary, Link, Key, Fingerprint, Clock, Regex, FileDiff,
+  Braces, ListTree, GitCompare, Binary, Link, Key, Fingerprint, Clock, Regex, FileDiff, FileDigit,
   Database, FileText, Bot, QrCode, Timer, Network, Globe, MapPin, Activity, RadioTower,
-  Code2, Shield, Sparkles, BookOpen, Puzzle
+  Code2, Shield, Sparkles, BookOpen, Puzzle,
+  KeyRound, Lock, Smartphone, Calculator, Type, CodeXml, Image, Table, FileCode, SquareCode,
+  Shapes, Shuffle, Palette, Blend, Box, Hexagon, WholeWord, FileImage, Camera
 } from 'lucide-vue-next'
 
 const icons: Record<string, Component> = {
-  Braces, ListTree, GitCompare, Binary, Link, Key, Fingerprint, Clock, Regex, FileDiff,
+  Braces, ListTree, GitCompare, Binary, Link, Key, Fingerprint, Clock, Regex, FileDiff, FileDigit,
   Database, FileText, Bot, QrCode, Timer, Network, Globe, MapPin, Activity, RadioTower,
-  Code2, Shield, Sparkles, BookOpen
+  Code2, Shield, Sparkles, BookOpen,
+  KeyRound, Lock, Smartphone, Calculator, Type, CodeXml, Image, Table, FileCode, SquareCode,
+  Shapes, Shuffle, Palette, Blend, Box, Hexagon, WholeWord, FileImage, Camera
 }
 
 const props = withDefaults(defineProps<{

@@ -35,3 +35,38 @@ export function decodeJwt(input:string): JwtResult {
     return { valid:false, error: e.message }
   }
 }
+
+function b64urlEncode(bytes: Uint8Array): string {
+  let bin = ''
+  bytes.forEach(b => { bin += String.fromCharCode(b) })
+  return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+}
+
+const HS_ALGOS: Record<string, 'SHA-256' | 'SHA-384' | 'SHA-512'> = {
+  HS256: 'SHA-256', HS384: 'SHA-384', HS512: 'SHA-512'
+}
+
+export async function verifyJwtHs(token: string, secret: string): Promise<{ verified: boolean; error?: string }> {
+  const parts = token.trim().split('.')
+  if (parts.length !== 3) return { verified: false, error: 'JWT 格式错误' }
+  let header: any
+  try {
+    header = JSON.parse(b64urlDecode(parts[0]))
+  } catch (e: any) {
+    return { verified: false, error: e.message }
+  }
+  const algo = HS_ALGOS[header?.alg]
+  if (!algo) return { verified: false, error: `不支持的算法: ${header?.alg}（此处仅支持 HS256/HS384/HS512 对称密钥验证）` }
+  if (!secret) return { verified: false, error: '请输入密钥' }
+  try {
+    const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(secret), { name: 'HMAC', hash: algo }, false, ['sign'])
+    const sig = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(`${parts[0]}.${parts[1]}`))
+    const computed = b64urlEncode(new Uint8Array(sig))
+    if (computed.length !== parts[2].length) return { verified: false }
+    let diff = 0
+    for (let i = 0; i < computed.length; i++) diff |= computed.charCodeAt(i) ^ parts[2].charCodeAt(i)
+    return diff === 0 ? { verified: true } : { verified: false }
+  } catch (e: any) {
+    return { verified: false, error: e.message }
+  }
+}

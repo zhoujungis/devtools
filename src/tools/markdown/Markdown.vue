@@ -17,7 +17,7 @@ const html = computed(()=> renderMarkdown(input.value))
       </div>
       <div>
         <div class="text-sm font-medium mb-2 flex items-center gap-2">预览 <button @click="copyToClipboard(html)" class="text-xs border px-2 py-0.5 rounded">复制 HTML</button></div>
-        <div class="border rounded-lg p-4 bg-white dark:bg-slate-900 min-h-[380px] text-sm leading-6 max-w-none overflow-auto" v-html="html"></div>
+        <div class="card !rounded-lg p-4 min-h-[380px] text-sm leading-6 max-w-none overflow-auto" v-html="html"></div>
         <div class="mt-2">
           <div class="text-xs font-medium mb-1">HTML 源码</div>
           <CodeEditor :modelValue="html" language="html" :readonly="true" />

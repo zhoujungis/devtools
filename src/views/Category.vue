@@ -16,7 +16,7 @@ const list = computed(()=> cat.value ? getToolsByCategory(cat.value.id) : [])
     <div v-else>
       <div class="mb-6">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-lg flex items-center justify-center text-white" :class="cat.color"><ToolIcon :name="cat.icon" /></div>
+          <div class="w-10 h-10 rounded-lg flex items-center justify-center text-white shadow-sm" :class="cat.color.solid"><ToolIcon :name="cat.icon" /></div>
           <div>
             <h1 class="text-xl font-bold">{{ cat.nameZh }} <span class="text-sm font-normal text-muted-foreground">{{ cat.name }}</span></h1>
             <p class="text-sm text-muted-foreground">{{ cat.description }}</p>
@@ -24,10 +24,10 @@ const list = computed(()=> cat.value ? getToolsByCategory(cat.value.id) : [])
         </div>
       </div>
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        <button v-for="t in list" :key="t.id" @click="router.push(t.path)" class="text-left bg-white dark:bg-slate-900 border rounded-xl p-4 hover:shadow-md">
+        <button v-for="(t,i) in list" :key="t.id" @click="router.push(t.path)" class="animate-fade-up card card-hover text-left p-4 group" :style="{ animationDelay: `${i*30}ms` }">
           <div class="flex items-center gap-2.5">
-            <span class="w-7 h-7 rounded-md bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300"><ToolIcon :name="t.icon" class="w-4 h-4" /></span>
-            <div class="font-medium text-sm">{{ t.nameZh }}</div>
+            <span class="icon-chip w-7 h-7 rounded-md" :class="cat.color.soft"><ToolIcon :name="t.icon" class="w-4 h-4" /></span>
+            <div class="font-medium text-sm group-hover:text-primary transition-colors">{{ t.nameZh }}</div>
           </div>
           <div class="text-xs text-muted-foreground mt-1.5">{{ t.name }}</div>
           <p class="text-xs text-muted-foreground mt-2">{{ t.description }}</p>

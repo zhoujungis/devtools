@@ -43,6 +43,8 @@
 @layer base {
   * { @apply border-border; }
   body { @apply bg-background text-foreground font-sans antialiased; }
+  ::selection { @apply bg-violet-500/20 text-foreground; }
+  :focus-visible { @apply outline-none ring-2 ring-primary/40 ring-offset-2 ring-offset-background; }
   /* scrollbar */
   ::-webkit-scrollbar { width: 8px; height: 8px; }
   ::-webkit-scrollbar-track { @apply bg-transparent; }
@@ -56,5 +58,44 @@
 .cm-scroller { @apply font-mono text-sm; }
 
 /* utilities */
-.glass { @apply bg-white/80 dark:bg-slate-900/80 backdrop-blur-md; }
-.card-hover { @apply hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200; }
+@layer utilities {
+  .glass { @apply bg-white/80 dark:bg-slate-900/80 backdrop-blur-md; }
+  .card { @apply bg-white dark:bg-slate-900 border border-border rounded-xl; }
+  .card-hover { @apply hover:shadow-soft hover:-translate-y-0.5 hover:border-primary/40 transition-all duration-200; }
+  .text-gradient { @apply bg-gradient-to-r from-blue-600 to-violet-600 bg-clip-text text-transparent; }
+  .brand-gradient { @apply bg-gradient-to-r from-blue-600 to-violet-600; }
+  .icon-chip { @apply flex items-center justify-center rounded-lg shrink-0; }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 h-9 px-4 rounded-lg text-sm font-medium
+      bg-primary text-primary-foreground shadow-sm
+      hover:bg-primary/90 active:scale-[0.97] transition-all duration-150;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 h-9 px-3 rounded-lg text-sm font-medium
+      text-muted-foreground border border-transparent
+      hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-foreground
+      active:scale-[0.97] transition-all duration-150;
+  }
+  kbd {
+    @apply inline-flex items-center text-xs font-sans text-muted-foreground
+      bg-slate-100 dark:bg-slate-800 border border-border rounded-md px-1.5 py-0.5;
+  }
+}
+
+/* page transition (enter-only: instant leave avoids stuck transitions when navigation is interrupted) */
+.page-enter-active { transition: opacity 0.18s ease, transform 0.18s ease; }
+.page-enter-from { opacity: 0; transform: translateY(6px); }
+
+/* modal transition */
+.modal-enter-active, .modal-leave-active { transition: opacity 0.18s ease; }
+.modal-enter-active > div:last-child, .modal-leave-active > div:last-child { transition: transform 0.18s ease; }
+.modal-enter-from, .modal-leave-to { opacity: 0; }
+.modal-enter-from > div:last-child, .modal-leave-to > div:last-child { transform: scale(0.96) translateY(-8px); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

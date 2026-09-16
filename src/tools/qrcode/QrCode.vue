@@ -55,7 +55,7 @@ function downloadSvg(){
           <button @click="downloadSvg" :disabled="!svgStr" class="px-3 py-1.5 border rounded-full text-sm disabled:opacity-50">下载 SVG</button>
         </div>
       </div>
-      <div class="flex flex-col items-center justify-center border rounded-xl p-6 bg-white dark:bg-slate-900">
+      <div class="flex flex-col items-center justify-center card p-6">
         <div v-if="dataUrl" class="p-4 bg-white rounded-lg shadow">
           <img :src="dataUrl" :width="width" :height="width" alt="QR Code" class="rounded" />
         </div>
